@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рулетка</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f2f5f9; /* Светлый фон */
+            color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .roulette-container {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .roulette {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .roulette-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 30px solid #3498db;
+        }
+
+        .bet-controls {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .bet-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #3498db;
+            color: #fff;
+            transition: background 0.3s;
+        }
+
+        .bet-controls button:hover {
+            background: #2980b9;
+        }
+
+        .history-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px;
+            white-space: nowrap;
+        }
+
+        .history-item {
+            background: linear-gradient(to right, #ff6347, #ff4500);
+            border-radius: 15px;
+            padding: 5px 15px;
+            color: #fff;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .bet-input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="roulette-container">
+        <div class="roulette">
+            <div class="roulette-pointer"></div>
+            <canvas id="rouletteCanvas" width="200" height="200"></canvas>
+        </div>
+        <div class="bet-input">
+            <input type="number" id="betAmount" placeholder="Сумма ставки" min="1" style="width: 100%; padding: 5px; border-radius: 10px; border: 1px solid #ddd;">
+        </div>
+        <div class="bet-controls">
+            <button>3x</button>
+            <button>20x</button>
+            <button>2x</button>
+            <button>20x</button>
+        </div>
+    </div>
+    <div class="history-container" id="history"></div>
+
+    <script>
+        // Ваши скрипты для анимации и логики будут добавлены здесь
+    </script>
+</body>
+</html>
