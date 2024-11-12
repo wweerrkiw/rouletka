@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f5f7fa;
+            background-color: #f0f4f8;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +17,7 @@
 
         .container {
             width: 90%;
-            max-width: 600px;
+            max-width: 400px;
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -28,56 +28,56 @@
         .timer {
             background: #2c3e50;
             color: #ecf0f1;
-            padding: 10px 0;
+            padding: 10px;
             border-radius: 10px;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
         .roulette-container {
             position: relative;
             margin: 0 auto;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-            background: conic-gradient(
-                #f39c12 0deg 90deg,
-                #3498db 90deg 180deg,
-                #9b59b6 180deg 270deg,
-                #e74c3c 270deg 360deg
-            );
+            border: 5px solid #bdc3c7;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: conic-gradient(
+                #e74c3c 0deg 120deg,
+                #2ecc71 120deg 240deg,
+                #3498db 240deg 360deg
+            );
         }
 
         .roulette-pointer {
             position: absolute;
-            top: -30px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 30px solid #2c3e50;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #2c3e50;
         }
 
         .bet-options {
             display: flex;
             justify-content: space-around;
-            margin: 20px 0;
+            margin-top: 15px;
         }
 
         .bet-button {
             background-color: #3498db;
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             transition: background 0.3s;
         }
 
@@ -86,37 +86,35 @@
         }
 
         .bet-input {
-            width: 60%;
+            width: 70%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .bet-color {
-            background-color: #e74c3c;
-            color: #fff;
-            border-radius: 20px;
-            padding: 5px 15px;
-            cursor: pointer;
-            border: none;
-            margin: 0 5px;
+            border-radius: 5px;
             font-size: 14px;
-        }
-
-        .bet-color.black {
-            background-color: #34495e;
-        }
-
-        .bet-color.green {
-            background-color: #27ae60;
+            margin-top: 10px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(1440deg); }
         }
+
+        .results-history {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .result-item {
+            background-color: #2ecc71;
+            border-radius: 10px;
+            padding: 10px;
+            color: #fff;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
     </style>
 </head>
 <body>
@@ -125,13 +123,13 @@
         <div class="roulette-container" id="roulette">
             <div class="roulette-pointer"></div>
         </div>
-        <div class="bet-options">
-            <button class="bet-color" onclick="placeBet('red')">Красное</button>
-            <button class="bet-color black" onclick="placeBet('black')">Черное</button>
-            <button class="bet-color green" onclick="placeBet('green')">Зеленое</button>
-        </div>
         <input type="number" id="betAmount" class="bet-input" placeholder="Сумма ставки" min="1">
-        <button class="bet-button" onclick="startSpin()">Старт</button>
+        <div class="bet-options">
+            <button class="bet-button" onclick="placeBet('red')">Красное</button>
+            <button class="bet-button" onclick="placeBet('black')">Черное</button>
+            <button class="bet-button" onclick="placeBet('green')">Зеленое</button>
+        </div>
+        <div class="results-history" id="history"></div>
     </div>
 
     <script>
@@ -139,32 +137,25 @@
 
         function placeBet(color) {
             selectedColor = color;
-            alert(`Вы выбрали ${color} цвет для ставки`);
+            alert(`Ставка на ${color} цвет сделана.`);
         }
 
         function startSpin() {
             if (!selectedColor) {
-                alert('Пожалуйста, выберите цвет для ставки.');
+                alert('Выберите цвет для ставки.');
                 return;
             }
 
-            const betAmount = document.getElementById('betAmount').value;
-            if (betAmount && betAmount > 0) {
-                alert(`Ставка сделана: ${betAmount} на ${selectedColor}`);
-                const roulette = document.getElementById('roulette');
-                roulette.style.animation = 'none';
-                setTimeout(() => {
-                    roulette.style.animation = 'spin 4s ease-out';
-                }, 10);
-            } else {
-                alert('Введите корректную сумму ставки.');
-            }
+            const roulette = document.getElementById('roulette');
+            roulette.style.animation = 'none';
+            setTimeout(() => {
+                roulette.style.animation = 'spin 4s ease-out';
+            }, 10);
         }
 
         function startTimer(duration, display) {
-            let timer = duration, minutes, seconds;
+            let timer = duration, seconds;
             setInterval(() => {
-                minutes = Math.floor(timer / 60);
                 seconds = timer % 60;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
                 display.textContent = `До следующего раунда: 00:${seconds}`;
@@ -182,3 +173,4 @@
     </script>
 </body>
 </html>
+
