@@ -15,21 +15,30 @@
             margin: 0;
         }
 
-        .roulette-container {
+        .container {
+            width: 90%;
+            max-width: 600px;
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             text-align: center;
-            width: 90%;
-            max-width: 400px;
         }
 
-        .roulette {
+        .timer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px 0;
+            border-radius: 10px;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .roulette-container {
             position: relative;
-            margin: 0 auto 20px;
-            width: 220px;
-            height: 220px;
+            margin: 0 auto;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
             background: conic-gradient(
                 #f39c12 0deg 90deg,
@@ -40,59 +49,62 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: spin 4s ease-out;
         }
 
         .roulette::after {
             content: "";
             position: absolute;
-            top: 0;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 20px solid #2c3e50;
-        }
-
-        .timer {
-            font-size: 24px;
-            margin-bottom: 10px;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid #2c3e50;
         }
 
         .bet-input {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         .bet-input input {
             width: 60%;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
             margin-right: 10px;
+            font-size: 18px;
         }
 
         .bet-button {
             background-color: #3498db;
             color: #fff;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            font-size: 18px;
             transition: background 0.3s;
         }
 
         .bet-button:hover {
             background-color: #2980b9;
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(1440deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="roulette-container">
-        <div class="timer">00:29</div>
-        <div class="roulette" id="roulette"></div>
+    <div class="container">
+        <div class="timer" id="timer">00:29</div>
+        <div class="roulette-container" id="roulette"></div>
         <div class="bet-input">
             <input type="number" id="betAmount" placeholder="Сумма ставки" min="1">
             <button class="bet-button" onclick="startSpin()">Старт</button>
@@ -101,15 +113,41 @@
 
     <script>
         function startSpin() {
+            const roulette = document.getElementById('roulette');
             const betAmount = document.getElementById('betAmount').value;
+
             if (betAmount && betAmount > 0) {
                 alert(`Ставка сделана: ${betAmount}`);
-                // Логика для начала анимации рулетки.
+                roulette.style.animation = 'none';
+                setTimeout(() => {
+                    roulette.style.animation = 'spin 4s ease-out';
+                }, 10);
             } else {
                 alert('Введите корректную сумму ставки.');
             }
         }
+
+        // Таймер обратного отсчета
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            setInterval(() => {
+                minutes = Math.floor(timer / 60);
+                seconds = timer % 60;
+
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                display.textContent = `00:${seconds}`;
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            const countdown = 29; // 29 секунд
+            const display = document.getElementById('timer');
+            startTimer(countdown, display);
+        };
     </script>
 </body>
 </html>
-
