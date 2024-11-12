@@ -3,112 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рулетка</title>
+    <title>Минималистичная Рулетка</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background: #f2f5f9; /* Светлый фон */
-            color: #333;
             font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .roulette-container {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             text-align: center;
-            width: 300px;
-            margin-bottom: 20px;
+            width: 90%;
+            max-width: 400px;
         }
 
         .roulette {
             position: relative;
-            width: 200px;
-            height: 200px;
+            margin: 0 auto 20px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
-            margin: 0 auto;
+            background: conic-gradient(
+                #f39c12 0deg 90deg,
+                #3498db 90deg 180deg,
+                #9b59b6 180deg 270deg,
+                #e74c3c 270deg 360deg
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .roulette-pointer {
+        .roulette::after {
+            content: "";
             position: absolute;
-            top: -20px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-bottom: 30px solid #3498db;
+            border-bottom: 20px solid #2c3e50;
         }
 
-        .bet-controls {
+        .timer {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .bet-input {
             display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
+            justify-content: center;
+            margin-bottom: 20px;
         }
 
-        .bet-controls button {
+        .bet-input input {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        .bet-button {
+            background-color: #3498db;
+            color: #fff;
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background: #3498db;
-            color: #fff;
             transition: background 0.3s;
         }
 
-        .bet-controls button:hover {
-            background: #2980b9;
-        }
-
-        .history-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px;
-            white-space: nowrap;
-        }
-
-        .history-item {
-            background: linear-gradient(to right, #ff6347, #ff4500);
-            border-radius: 15px;
-            padding: 5px 15px;
-            color: #fff;
-            font-size: 12px;
-            display: inline-block;
-        }
-
-        .bet-input {
-            margin-bottom: 10px;
+        .bet-button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
     <div class="roulette-container">
-        <div class="roulette">
-            <div class="roulette-pointer"></div>
-            <canvas id="rouletteCanvas" width="200" height="200"></canvas>
-        </div>
+        <div class="timer">00:29</div>
+        <div class="roulette" id="roulette"></div>
         <div class="bet-input">
-            <input type="number" id="betAmount" placeholder="Сумма ставки" min="1" style="width: 100%; padding: 5px; border-radius: 10px; border: 1px solid #ddd;">
-        </div>
-        <div class="bet-controls">
-            <button>3x</button>
-            <button>20x</button>
-            <button>2x</button>
-            <button>20x</button>
+            <input type="number" id="betAmount" placeholder="Сумма ставки" min="1">
+            <button class="bet-button" onclick="startSpin()">Старт</button>
         </div>
     </div>
-    <div class="history-container" id="history"></div>
 
     <script>
-        // Ваши скрипты для анимации и логики будут добавлены здесь
+        function startSpin() {
+            const betAmount = document.getElementById('betAmount').value;
+            if (betAmount && betAmount > 0) {
+                alert(`Ставка сделана: ${betAmount}`);
+                // Логика для начала анимации рулетки.
+            } else {
+                alert('Введите корректную сумму ставки.');
+            }
+        }
     </script>
 </body>
 </html>
+
