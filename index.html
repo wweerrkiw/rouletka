@@ -30,7 +30,7 @@
             color: #ecf0f1;
             padding: 10px 0;
             border-radius: 10px;
-            font-size: 32px;
+            font-size: 24px;
             margin-bottom: 20px;
         }
 
@@ -49,13 +49,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: spin 4s ease-out;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .roulette::after {
-            content: "";
+        .roulette-pointer {
             position: absolute;
-            top: -10px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -65,34 +64,53 @@
             border-bottom: 30px solid #2c3e50;
         }
 
-        .bet-input {
+        .bet-options {
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .bet-input input {
-            width: 60%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            margin-right: 10px;
-            font-size: 18px;
+            justify-content: space-around;
+            margin: 20px 0;
         }
 
         .bet-button {
             background-color: #3498db;
             color: #fff;
-            padding: 15px 25px;
+            padding: 10px 20px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             transition: background 0.3s;
         }
 
         .bet-button:hover {
             background-color: #2980b9;
+        }
+
+        .bet-input {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .bet-color {
+            background-color: #e74c3c;
+            color: #fff;
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            border: none;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+
+        .bet-color.black {
+            background-color: #34495e;
+        }
+
+        .bet-color.green {
+            background-color: #27ae60;
         }
 
         @keyframes spin {
@@ -103,21 +121,37 @@
 </head>
 <body>
     <div class="container">
-        <div class="timer" id="timer">00:29</div>
-        <div class="roulette-container" id="roulette"></div>
-        <div class="bet-input">
-            <input type="number" id="betAmount" placeholder="Сумма ставки" min="1">
-            <button class="bet-button" onclick="startSpin()">Старт</button>
+        <div class="timer" id="timer">До следующего раунда: 00:29</div>
+        <div class="roulette-container" id="roulette">
+            <div class="roulette-pointer"></div>
         </div>
+        <div class="bet-options">
+            <button class="bet-color" onclick="placeBet('red')">Красное</button>
+            <button class="bet-color black" onclick="placeBet('black')">Черное</button>
+            <button class="bet-color green" onclick="placeBet('green')">Зеленое</button>
+        </div>
+        <input type="number" id="betAmount" class="bet-input" placeholder="Сумма ставки" min="1">
+        <button class="bet-button" onclick="startSpin()">Старт</button>
     </div>
 
     <script>
-        function startSpin() {
-            const roulette = document.getElementById('roulette');
-            const betAmount = document.getElementById('betAmount').value;
+        let selectedColor = null;
 
+        function placeBet(color) {
+            selectedColor = color;
+            alert(`Вы выбрали ${color} цвет для ставки`);
+        }
+
+        function startSpin() {
+            if (!selectedColor) {
+                alert('Пожалуйста, выберите цвет для ставки.');
+                return;
+            }
+
+            const betAmount = document.getElementById('betAmount').value;
             if (betAmount && betAmount > 0) {
-                alert(`Ставка сделана: ${betAmount}`);
+                alert(`Ставка сделана: ${betAmount} на ${selectedColor}`);
+                const roulette = document.getElementById('roulette');
                 roulette.style.animation = 'none';
                 setTimeout(() => {
                     roulette.style.animation = 'spin 4s ease-out';
@@ -127,16 +161,13 @@
             }
         }
 
-        // Таймер обратного отсчета
         function startTimer(duration, display) {
             let timer = duration, minutes, seconds;
             setInterval(() => {
                 minutes = Math.floor(timer / 60);
                 seconds = timer % 60;
-
                 seconds = seconds < 10 ? '0' + seconds : seconds;
-                display.textContent = `00:${seconds}`;
-
+                display.textContent = `До следующего раунда: 00:${seconds}`;
                 if (--timer < 0) {
                     timer = duration;
                 }
@@ -144,7 +175,7 @@
         }
 
         window.onload = function () {
-            const countdown = 29; // 29 секунд
+            const countdown = 29;
             const display = document.getElementById('timer');
             startTimer(countdown, display);
         };
