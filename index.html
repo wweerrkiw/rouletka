@@ -25,7 +25,7 @@
             text-align: center;
         }
 
-        .timer {
+        .timer, .balance {
             background: #2c3e50;
             color: #ecf0f1;
             padding: 10px;
@@ -45,11 +45,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: conic-gradient(
-                #e74c3c 0deg 120deg,
-                #2ecc71 120deg 240deg,
-                #3498db 240deg 360deg
-            );
         }
 
         .roulette-pointer {
@@ -119,25 +114,36 @@
 </head>
 <body>
     <div class="container">
+        <div class="balance" id="balance">Баланс: 1000 монет</div>
         <div class="timer" id="timer">До следующего раунда: 00:29</div>
         <div class="roulette-container" id="roulette">
             <div class="roulette-pointer"></div>
         </div>
         <input type="number" id="betAmount" class="bet-input" placeholder="Сумма ставки" min="1">
         <div class="bet-options">
-            <button class="bet-button" onclick="placeBet('red')">Красное</button>
-            <button class="bet-button" onclick="placeBet('black')">Черное</button>
-            <button class="bet-button" onclick="placeBet('green')">Зеленое</button>
+            <button class="bet-button" onclick="placeBet('yellow')">Желтый (x20)</button>
+            <button class="bet-button" onclick="placeBet('green')">Зеленый (x5)</button>
+            <button class="bet-button" onclick="placeBet('blue')">Синий (x2)</button>
+            <button class="bet-button" onclick="placeBet('red')">Красный (x1.5)</button>
         </div>
         <div class="results-history" id="history"></div>
     </div>
 
     <script>
+        let balance = 1000;
         let selectedColor = null;
+        let betAmount = 0;
 
         function placeBet(color) {
+            betAmount = parseInt(document.getElementById('betAmount').value);
+            if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
+                alert('Введите корректную сумму ставки.');
+                return;
+            }
             selectedColor = color;
             alert(`Ставка на ${color} цвет сделана.`);
+            balance -= betAmount;
+            document.getElementById('balance').textContent = `Баланс: ${balance} монет`;
         }
 
         function startSpin() {
@@ -151,16 +157,47 @@
             setTimeout(() => {
                 roulette.style.animation = 'spin 4s ease-out';
             }, 10);
+
+            setTimeout(() => {
+                // Симуляция результата
+                const winningColor = simulateWinningColor();
+                calculateWinnings(winningColor);
+            }, 4000);
+        }
+
+        function simulateWinningColor() {
+            const colors = ['yellow', 'green', 'green', 'green', 'green', 'green', 'blue', 'blue', 'red'];
+            const index = Math.floor(Math.random() * colors.length);
+            return colors[index];
+        }
+
+        function calculateWinnings(winningColor) {
+            let payoutMultiplier = 0;
+            if (winningColor === selectedColor) {
+                if (winningColor === 'yellow') payoutMultiplier = 20;
+                if (winningColor === 'green') payoutMultiplier = 5;
+                if (winningColor === 'blue') payoutMultiplier = 2;
+                if (winningColor === 'red') payoutMultiplier = 1.5;
+                
+                const winnings = betAmount * payoutMultiplier;
+                balance += winnings;
+                alert(`Вы выиграли! Выпало ${winningColor}. Выигрыш: ${winnings} монет.`);
+            } else {
+                alert(`Вы проиграли. Выпало ${winningColor}.`);
+            }
+            document.getElementById('balance').textContent = `Баланс: ${balance} монет`;
         }
 
         function startTimer(duration, display) {
             let timer = duration, seconds;
-            setInterval(() => {
+            const countdownInterval = setInterval(() => {
                 seconds = timer % 60;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
                 display.textContent = `До следующего раунда: 00:${seconds}`;
                 if (--timer < 0) {
-                    timer = duration;
+                    clearInterval(countdownInterval);
+                    startSpin();
+                    startTimer(29, display);
                 }
             }, 1000);
         }
@@ -173,4 +210,5 @@
     </script>
 </body>
 </html>
+
 
