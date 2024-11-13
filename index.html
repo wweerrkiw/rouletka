@@ -57,12 +57,6 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                #f1c40f 0% 11.1%, 
-                #2ecc71 11.1% 66.6%, 
-                #3498db 66.6% 88.8%, 
-                #e74c3c 88.8% 100%
-            );
             transform: rotate(0deg);
             transition: transform 4s ease-out;
         }
@@ -132,7 +126,7 @@
         <div class="timer" id="timer">До следующего раунда: 00:29</div>
         <div class="roulette-container">
             <div class="roulette-pointer"></div>
-            <div class="roulette" id="roulette"></div>
+            <canvas id="roulette" width="250" height="250"></canvas>
         </div>
         <input type="number" id="betAmount" class="bet-input" placeholder="Сумма ставки" min="1">
         <div class="bet-options">
@@ -148,7 +142,9 @@
         let balance = 1000;
         let selectedColor = null;
         let betAmount = 0;
-
+        const colors = ['#f1c40f', '#2ecc71', '#3498db', '#e74c3c'];
+        const multipliers = [20, 5, 2, 1.5];
+        
         function placeBet(color) {
             betAmount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
@@ -161,6 +157,21 @@
             document.getElementById('balance').textContent = `Баланс: ${balance} монет`;
         }
 
+        function generateRandomSegments(ctx, radius) {
+            const totalSegments = 8; // Общее количество сегментов
+            let startAngle = 0;
+            for (let i = 0; i < totalSegments; i++) {
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                const segmentAngle = (2 * Math.PI) / totalSegments;
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, startAngle, startAngle + segmentAngle);
+                ctx.fillStyle = colors[colorIndex];
+                ctx.fill();
+                startAngle += segmentAngle;
+            }
+        }
+
         function startSpin() {
             if (!selectedColor) {
                 alert('Выберите цвет для ставки.');
@@ -168,61 +179,24 @@
             }
 
             const roulette = document.getElementById('roulette');
-            const degrees = Math.floor(Math.random() * 360) + 1440; // Минимум 4 полных оборота
-            roulette.style.transform = `rotate(${degrees}deg)`;
+            const ctx = roulette.getContext('2d');
+            const radius = roulette.width / 2;
+            generateRandomSegments(ctx, radius);
 
-            setTimeout(() => {
-                const winningColor = getWinningColor(degrees % 360);
-                calculateWinnings(winningColor);
-            }, 4000);
-        }
-
-        function getWinningColor(angle) {
-            if (angle >= 0 && angle < 40) return 'yellow';
-            if (angle >= 40 && angle < 240) return 'green';
-            if (angle >= 240 && angle < 320) return 'blue';
-            return 'red';
-        }
-
-        function calculateWinnings(winningColor) {
-            let payoutMultiplier = 0;
-            if (winningColor === selectedColor) {
-                if (winningColor === 'yellow') payoutMultiplier = 20;
-                if (winningColor === 'green') payoutMultiplier = 5;
-                if (winningColor === 'blue') payoutMultiplier = 2;
-                if (winningColor === 'red') payoutMultiplier = 1.5;
-                
-                const winnings = betAmount * payoutMultiplier;
-                balance += winnings;
-                alert(`Вы выиграли! Выпало ${winningColor}. Выигрыш: ${winnings} монет.`);
-            } else {
-                alert(`Вы проиграли. Выпало ${winningColor}.`);
-            }
-            document.getElementById('balance').textContent = `Баланс: ${balance} монет`;
-        }
-
-        function startTimer(duration, display) {
-            let timer = duration, seconds;
-            const countdownInterval = setInterval(() => {
-                seconds = timer % 60;
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                display.textContent = `До следующего раунда: 00:${seconds}`;
-                if (--timer < 0) {
-                    clearInterval(countdownInterval);
-                    startSpin();
-                    startTimer(29, display);
-                }
-            }, 1000);
+            const randomDegrees = Math.floor(Math.random() * 1440) + 720; // 2-4 полных оборота
+            roulette.style.transform = `rotate(${randomDegrees}deg)`;
         }
 
         window.onload = function () {
-            const countdown = 29;
-            const display = document.getElementById('timer');
-            startTimer(countdown, display);
+            const roulette = document.getElementById('roulette');
+            const ctx = roulette.getContext('2d');
+            const radius = roulette.width / 2;
+            generateRandomSegments(ctx, radius);
         };
     </script>
 </body>
 </html>
+
 
 
 
